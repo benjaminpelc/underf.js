@@ -53,9 +53,9 @@ exports.compose = function() {
 };
 
 /**
-* reduce 
+* fold 
 */
-exports.reduce = exports.curry(function(func, init, xs) {
+exports.fold = exports.curry(function(func, init, xs) {
 	return xs.reduce(func, init);
 });
 
@@ -64,6 +64,14 @@ exports.reduce = exports.curry(function(func, init, xs) {
 */
 exports.map = exports.curry(function(func, xs){
 	return xs.map(func);
+});
+
+/**
+* filter 
+*/
+// filter :: (a -> Bool) -> [a] -> [a]
+exports.filter = exports.curry(function(func, xs) {
+	return xs.filter(func);
 });
 
 /**
@@ -110,6 +118,82 @@ exports.div = exports.curry(function(a, b) {
 exports.square = function(a) {
 	return a * a;
 };
+
+/******************************************************************************
+STRING FUNCTIONS
+******************************************************************************/
+
+/**
+ * split 
+ * split the string around the expression
+ */
+//+ split :: exp -> str -> str
+exports.split = exports.curry(function(expr, str) {
+	return str.split(expr);
+});
+
+/**
+* splitFirst
+* the first substring from split around expr 
+*/
+//+ splitFirst :: exp -> str -> [str] 
+exports.splitFirst = exports.curry(function(expr, str) {
+	return str.split(expr)[0];
+});
+
+/**
+* splitLast
+* return the last substring from split around expr 
+*/
+//+ splitLast :: expr -> str -> str 
+exports.splitLast = exports.curry(function(expr, str) {
+	var splits = str.split(expr);
+	return str.split(expr)[splits.length - 1];
+});
+
+/**
+* splitN
+* return the nth substring of split about expr 
+*/
+//+ splitN :: expr -> int -> str -> str 
+exports.splitN = exports.curry(function(expr, n, str) {
+	return str.split(expr)[n];
+});
+
+/*******************************************************************************
+ARRAY
+*******************************************************************************/
+
+/**
+* array2str 
+* collapse an array down to a string 
+*/
+//+ array2str : [a] -> str
+exports.array2str = function(xs) {
+	return exports.fold(exports.add, "", xs);
+};
+
+/*******************************************************************************
+HTML 
+*******************************************************************************/
+
+/**
+* htmlTagger
+* wrap a string in html tags 
+*/
+//+ htmlTagger :: tag (str) -> str -> str 
+exports.htmlTagger = exports.curry(function(tag, str) {
+	return '<' + tag + '>' + str + '</' + tag + '>';
+});
+
+exports.htmlAddAttribute = exports.curry(function(attr, val, str) {
+	var regex = />/;
+	if (str.match(regex)) {
+		return str.replace(regex, ' ' + attr + '="' + val + '">');
+	}
+	return str;
+});
+
 
 return exports;
 
